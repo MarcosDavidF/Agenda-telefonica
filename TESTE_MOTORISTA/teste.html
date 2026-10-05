@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Cadastro de Motorista</title>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <main class="pagina">
+
+        <!-- CABEÇALHO -->
+
+        <header class="cabecalho">
+
+            <div>
+                <h1>Adicionar Motorista</h1>
+
+                <p>
+                    Cadastre os dados pessoais, documentos e informações profissionais.
+                </p>
+            </div>
+
+            <button class="btn-voltar">
+                ← Voltar
+            </button>
+
+        </header>
+
+
+        <!-- ÁREA PRINCIPAL -->
+
+        <div class="layout">
+
+
+            <!-- FOTO -->
+
+            <aside class="card-foto">
+
+                <h2>Foto do motorista</h2>
+
+                <div class="preview">
+
+                    <span id="textoFoto">
+                        Foto
+                    </span>
+
+                    <img id="imagemFoto" alt="Foto do motorista">
+
+                </div>
+
+                <label for="fotoMotorista" class="btn-foto">
+                    📷 Selecionar foto
+                </label>
+
+                <input
+                    type="file"
+                    id="fotoMotorista"
+                    accept="image/*"
+                >
+
+                <small>
+                    Formatos aceitos: JPG, JPEG e PNG.
+                </small>
+
+            </aside>
+
+
+            <!-- FORMULÁRIO -->
+
+            <section class="conteudo">
+
+
+                <!-- DADOS PESSOAIS -->
+
+                <div class="card">
+
+                    <div class="titulo-secao">
+
+                        <div class="icone">
+                            👤
+                        </div>
+
+                        <div>
+                            <h2>Dados pessoais</h2>
+
+                            <p>
+                                Informações básicas do motorista
+                            </p>
+                        </div>
+
+                    </div>
+
+
+                    <div class="grid">
+
+                        <div class="campo campo-grande">
+
+                            <label>
+                                Nome completo <span>*</span>
+                            </label>
+
+                            <input
+                                type="text"
+                                placeholder="Digite o nome completo"
+                            >
+
+                        </div>
+
+
+                        <div class="campo">
+
+                            <label>
+                                CPF <span>*</span>
+                            </label>
+
+                            <input
+                                type="text"
+                                inputmode="numeric"
+                                maxlength="11"
+                                placeholder="000.000.000-00"
+                            >
+
+                        </div>
+
+
+                        <div class="campo">
+
+                            <label>
+                                Data de nascimento <span>*</span>
+                            </label>
+
+                            <input type="date">
+
+                        </div>
+
+
+                        <div class="campo">
+
+                            <label>
+                                Gênero <span>*</span>
+                            </label>
+
+                            <select>
+
+                                <option value="">
+                                    Selecione
+                                </option>
+
+                                <option>
+                                    Masculino
+                                </option>
+
+                                <option>
+                                    Feminino
+                                </option>
+
+                            </select>
+
+                        </div>
+
+
+                        <div class="campo">
+
+                            <label>
+                                RG <span>*</span>
+                            </label>
+
+                            <input type="text">
+
+                        </div>
+
+
+                        <div class="campo">
+
+                            <label>
+                                Órgão expedidor <span>*</span>
+                            </label>
+
+                            <input type="text">
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- FILIAÇÃO -->
+
+                <div class="card">
+
+                    <div class="titulo-secao">
+
+                        <div class="icone">
+                            👨‍👩‍👦
+                        </div>
+
+                        <div>
+
+                            <h2>Filiação</h2>
+
+                            <p>
+                                Informações familiares
+                            </p>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="grid">
+
+                        <div class="campo">
+
+                            <label>
+                                Nome do pai
+                            </label>
+
+                            <input
+                                type="text"
+                                placeholder="Nome completo"
+                            >
+
+                        </div>
+
+
+                        <div class="campo">
+
+                            <label>
+                                Nome da mãe
+                            </label>
+
+                            <input
+                                type="text"
+                                placeholder="Nome completo"
+                            >
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- DOCUMENTAÇÃO -->
+
+                <div class="card">
+
+                    <div class="titulo-secao">
+
+                        <div class="icone">
+                            📄
+                        </div>
+
+                        <div>
+
+                            <h2>Documentação</h2>
+
+                            <p>
+                                Documentos e informações da CNH
+                            </p>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="grid">
+
+                        <div class="campo">
+
+                            <label>
+                                Número da CNH <span>*</span>
+                            </label>
+
+                            <input
+                                type="text"
+                                inputmode="numeric"
+                                maxlength="11"
+                                placeholder="Digite o número"
+                            >
+
+                        </div>
+
+
+                        <div class="campo">
+
+                            <label>
+                                Categoria <span>*</span>
+                            </label>
+
+                            <select>
+
+                                <option value="">
+                                    Selecione
+                                </option>
+
+                                <option>A</option>
+                                <option>B</option>
+                                <option>C</option>
+                                <option>D</option>
+                                <option>E</option>
+
+                            </select>
+
+                        </div>
+
+
+                        <div class="campo">
+
+                            <label>
+                                Data de emissão<span>*</span>
+                            </label>
+
+                            <input type="date">
+
+                        </div>
+
+
+                        <div class="campo">
+
+                            <label>
+                                Validade da CNH<span>*</span>
+                            </label>
+
+                            <input type="date">
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="documentos">
+
+                        <label for="cnhImagem" class="btn-documento">
+                            📄 Enviar CNH aberta
+                        </label>
+
+                        <input
+                            type="file"
+                            id="cnhImagem"
+                            accept="image/*"
+                        >
+
+
+                        <label for="cnhPdf" class="btn-documento">
+                            📎 Enviar CNH PDF
+                        </label>
+
+                        <input
+                            type="file"
+                            id="cnhPdf"
+                            accept=".pdf"
+                        >
+
+                    </div>
+
+                </div>
+
+
+                <!-- DADOS PROFISSIONAIS -->
+
+                <div class="card">
+
+                    <div class="titulo-secao">
+
+                        <div class="icone">
+                            🚛
+                        </div>
+
+                        <div>
+
+                            <h2>Dados profissionais</h2>
+
+                            <p>
+                                Informações relacionadas ao trabalho
+                            </p>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="grid">
+
+                        <div class="campo">
+
+                            <label>
+                                Função <span>*</span>
+                            </label>
+
+                            <select>
+
+                                <option value="">
+                                    Selecione
+                                </option>
+
+                                <option>
+                                    Motorista
+                                </option>
+
+                                <option>
+                                    Motorista carreteiro
+                                </option>
+
+                            </select>
+
+                        </div>
+
+
+                        <div class="campo">
+
+                            <label>
+                                Perfil <span>*</span>
+                            </label>
+
+                            <select>
+
+                                <option value="">
+                                    Selecione
+                                </option>
+
+                                <option>
+                                    Motorista próprio
+                                </option>
+
+                                <option>
+                                    Terceirizado
+                                </option>
+
+                            </select>
+
+                        </div>
+
+
+                        <div class="campo">
+
+                            <label>
+                                CNPJ da empresa
+                            </label>
+
+                            <input
+                                type="text"
+                                inputmode="numeric"
+                            >
+
+                        </div>
+
+
+                        <div class="campo">
+
+                            <label>
+                                Controle do cliente<span>*</span>
+                            </label>
+
+                            <input type="text">
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- BOTÕES -->
+
+                <div class="acoes">
+
+                    <button
+                        type="button"
+                        class="btn-cancelar"
+                    >
+                        Cancelar
+                    </button>
+
+
+                    <button
+                        type="submit"
+                        class="btn-cadastrar"
+                    >
+                        ✓ Cadastrar motorista
+                    </button>
+
+                </div>
+
+
+            </section>
+
+        </div>
+
+    </main>
+
+
+    <script src="script.js"></script>
+
+</body>
+
+</html>

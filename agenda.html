@@ -1,0 +1,859 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Agenda Telefônica e Compromissos</title>
+    
+    <!-- Estilos CSS embutidos para interface moderna, responsiva e agradável -->
+    <style>
+        :root {
+            --primary-color: #4f46e5;
+            --primary-hover: #4338ca;
+            --secondary-color: #06b6d4;
+            --bg-color: #f8fafc;
+            --card-bg: #ffffff;
+            --text-color: #1e293b;
+            --text-muted: #64748b;
+            --border-color: #e2e8f0;
+            --danger-color: #ef4444;
+            --danger-hover: #dc2626;
+            --success-color: #22c55e;
+            --warning-color: #f59e0b;
+            --radius: 12px;
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+
+        /* Estilos básicos de reset e tipografia */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.6;
+            padding: 20px;
+        }
+
+        /* Container principal centralizado */
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        /* Cabeçalho da aplicação */
+        header {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        header h1 {
+            color: var(--primary-color);
+            font-size: 2.2rem;
+            margin-bottom: 5px;
+        }
+
+        header p {
+            color: var(--text-muted);
+            font-size: 1rem;
+        }
+
+        /* Navegação por Abas (Contatos / Compromissos) */
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            border-bottom: 2px solid var(--border-color);
+            padding-bottom: 5px;
+        }
+
+        .tab-button {
+            flex: 1;
+            padding: 12px 20px;
+            background: transparent;
+            border: none;
+            border-bottom: 3px solid transparent;
+            font-size: 1.05rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border-radius: 8px 8px 0 0;
+        }
+
+        .tab-button:hover {
+            color: var(--primary-color);
+            background-color: rgba(79, 70, 229, 0.05);
+        }
+
+        .tab-button.active {
+            color: var(--primary-color);
+            border-bottom-color: var(--primary-color);
+            background-color: rgba(79, 70, 229, 0.08);
+        }
+
+        /* Seções de conteúdo das abas */
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        /* Estilos do Formulário e Cards */
+        .card {
+            background-color: var(--card-bg);
+            border-radius: var(--radius);
+            padding: 24px;
+            box-shadow: var(--shadow);
+            margin-bottom: 25px;
+            border: 1px solid var(--border-color);
+        }
+
+        .card h2 {
+            font-size: 1.3rem;
+            margin-bottom: 15px;
+            color: var(--primary-color);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* Caixas de Alerta e Mensagens */
+        .alert {
+            padding: 12px 16px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            display: none;
+            font-size: 0.95rem;
+            font-weight: 500;
+        }
+
+        .alert-error {
+            background-color: #fef2f2;
+            color: #991b1b;
+            border: 1px solid #fecaca;
+        }
+
+        .alert-success {
+            background-color: #f0fdf4;
+            color: #166534;
+            border: 1px solid #bbf7d0;
+        }
+
+        /* Grid de formulário responsivo */
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .form-group.full-width {
+            grid-column: 1 / -1;
+        }
+
+        label {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--text-color);
+        }
+
+        label .required {
+            color: var(--danger-color);
+        }
+
+        input, select {
+            padding: 10px 14px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 0.95rem;
+            outline: none;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+
+        input:focus, select:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.15);
+        }
+
+        /* Botões */
+        .btn-group {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.2s, transform 0.1s;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+
+        .btn:active {
+            transform: scale(0.98);
+        }
+
+        .btn-primary {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: var(--primary-hover);
+        }
+
+        .btn-secondary {
+            background-color: #e2e8f0;
+            color: #475569;
+        }
+
+        .btn-secondary:hover {
+            background-color: #cbd5e1;
+        }
+
+        .btn-danger {
+            background-color: #fee2e2;
+            color: var(--danger-color);
+        }
+
+        .btn-danger:hover {
+            background-color: #fca5a5;
+            color: #7f1d1d;
+        }
+
+        .btn-edit {
+            background-color: #e0f2fe;
+            color: #0369a1;
+        }
+
+        .btn-edit:hover {
+            background-color: #bae6fd;
+        }
+
+        /* Listagem de Itens Cadastrados */
+        .list-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .badge-count {
+            background-color: #e0e7ff;
+            color: var(--primary-color);
+            font-weight: bold;
+            padding: 2px 10px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: var(--text-muted);
+            font-style: italic;
+        }
+
+        .data-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .item-card {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius);
+            padding: 16px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .item-card:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow);
+        }
+
+        .item-info {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .item-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--text-color);
+        }
+
+        .item-details {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .item-details span {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .tag-linked-contact {
+            background-color: #f0fdf4;
+            color: #166534;
+            border: 1px solid #bbf7d0;
+            padding: 2px 8px;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        /* Responsividade para telas menores (Celulares) */
+        @media (max-width: 600px) {
+            .item-card {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 15px;
+            }
+
+            .item-actions {
+                width: 100%;
+                display: flex;
+                justify-content: flex-end;
+                border-top: 1px solid var(--border-color);
+                padding-top: 10px;
+            }
+
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <!-- Cabeçalho Principal -->
+        <header>
+            <h1>Agenda & Compromissos</h1>
+            <p>Trabalho Acadêmico - Sistema de Gestão Pessoal Integrado</p>
+        </header>
+
+        <!-- Navegação entre Abas -->
+        <nav class="tabs">
+            <button class="tab-button active" onclick="trocarAba('contatos')">📇 Contatos</button>
+            <button class="tab-button" onclick="trocarAba('compromissos')">📅 Compromissos</button>
+        </nav>
+
+        <!-- ================= PARTE A: CONTATOS ================= -->
+        <section id="aba-contatos" class="tab-content active">
+            <!-- Formulário de Contato -->
+            <div class="card">
+                <h2 id="titulo-form-contato">➕ Novo Contato</h2>
+                
+                <!-- Caixa para mensagens de erro/sucesso dos contatos -->
+                <div id="mensagem-contato" class="alert"></div>
+
+                <form id="form-contato" onsubmit="salvarContato(event)">
+                    <!-- ID oculto para controle de edição -->
+                    <input type="hidden" id="contato-id">
+
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="contato-nome">Nome Completo <span class="required">*</span></label>
+                            <input type="text" id="contato-nome" placeholder="Ex: Ana Silva">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="contato-telefone">Telefone <span class="required">*</span></label>
+                            <input type="text" id="contato-telefone" placeholder="Ex: (11) 98765-4321">
+                        </div>
+
+                        <div class="form-group full-width">
+                            <label for="contato-email">E-mail (Opcional)</label>
+                            <input type="email" id="contato-email" placeholder="Ex: ana.silva@email.com">
+                        </div>
+                    </div>
+
+                    <div class="btn-group">
+                        <button type="submit" class="btn btn-primary" id="btn-salvar-contato">Salvar Contato</button>
+                        <button type="button" class="btn btn-secondary" id="btn-cancelar-contato" onclick="resetarFormularioContato()" style="display: none;">Cancelar</button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Lista de Contatos -->
+            <div class="card">
+                <div class="list-header">
+                    <h2>📋 Lista de Contatos</h2>
+                    <span class="badge-count" id="qtd-contatos">0 contatos</span>
+                </div>
+                <div id="lista-contatos" class="data-list">
+                    <!-- Contatos inseridos via JavaScript aqui -->
+                </div>
+            </div>
+        </section>
+
+        <!-- ================= PARTE B: COMPROMISSOS ================= -->
+        <section id="aba-compromissos" class="tab-content">
+            <!-- Formulário de Compromisso -->
+            <div class="card">
+                <h2 id="titulo-form-compromisso">➕ Novo Compromisso</h2>
+                
+                <!-- Caixa para mensagens de erro/sucesso dos compromissos -->
+                <div id="mensagem-compromisso" class="alert"></div>
+
+                <form id="form-compromisso" onsubmit="salvarCompromisso(event)">
+                    <!-- ID oculto para controle de edição -->
+                    <input type="hidden" id="compromisso-id">
+
+                    <div class="form-grid">
+                        <div class="form-group full-width">
+                            <label for="compromisso-titulo">Título do Compromisso <span class="required">*</span></label>
+                            <input type="text" id="compromisso-titulo" placeholder="Ex: Reunião de Projeto">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="compromisso-data">Data <span class="required">*</span></label>
+                            <input type="date" id="compromisso-data">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="compromisso-horario">Horário <span class="required">*</span></label>
+                            <input type="time" id="compromisso-horario">
+                        </div>
+
+                        <div class="form-group full-width">
+                            <label for="compromisso-contato">Vincular Contato (Opcional)</label>
+                            <select id="compromisso-contato">
+                                <option value="">-- Selecione um contato registrado --</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="btn-group">
+                        <button type="submit" class="btn btn-primary" id="btn-salvar-compromisso">Salvar Compromisso</button>
+                        <button type="button" class="btn btn-secondary" id="btn-cancelar-compromisso" onclick="resetarFormularioCompromisso()" style="display: none;">Cancelar</button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Lista de Compromissos -->
+            <div class="card">
+                <div class="list-header">
+                    <h2>📅 Lista de Compromissos</h2>
+                    <span class="badge-count" id="qtd-compromissos">0 compromissos</span>
+                </div>
+                <div id="lista-compromissos" class="data-list">
+                    <!-- Compromissos inseridos via JavaScript aqui -->
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <script>
+        /* ===================================================================
+           ESTRUTURA DE DADOS (MEMÓRIA DA APLICAÇÃO)
+           =================================================================== */
+        // Vetores que armazenam os objetos de Contatos e Compromissos
+        let contatos = [
+            { id: '1', nome: 'Carlos Eduardo', telefone: '(11) 91234-5678', email: 'carlos@email.com' },
+            { id: '2', nome: 'Ana Beatriz', telefone: '(21) 99876-5432', email: 'ana.b@email.com' }
+        ];
+
+        let compromissos = [
+            { id: '1', titulo: 'Apresentação do Trabalho', data: '2026-10-15', horario: '14:30', contatoId: '2' }
+        ];
+
+        /* ===================================================================
+           1. NAVEGAÇÃO E UTILITÁRIOS DE INTERFACE
+           =================================================================== */
+        
+        // Função para alternar visibilidade entre as abas Contatos / Compromissos
+        function trocarAba(nomeAba) {
+            // Remove a classe 'active' de todos os botões e conteúdos
+            document.querySelectorAll('.tab-button').forEach(btn => btn.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(aba => aba.classList.remove('active'));
+
+            // Ativa o botão e a aba solicitada
+            if (nomeAba === 'contatos') {
+                document.querySelectorAll('.tab-button')[0].classList.add('active');
+                document.getElementById('aba-contatos').classList.add('active');
+            } else {
+                document.querySelectorAll('.tab-button')[1].classList.add('active');
+                document.getElementById('aba-compromissos').classList.add('active');
+            }
+        }
+
+        // Exibe mensagem de feedback visual (Sucesso ou Erro)
+        function exibirMensagem(elementId, mensagem, ehErro = true) {
+            const el = document.getElementById(elementId);
+            el.textContent = mensagem;
+            el.className = `alert ${ehErro ? 'alert-error' : 'alert-success'}`;
+            el.style.display = 'block';
+
+            // Esconde a mensagem automaticamente após 4 segundos se for sucesso
+            if (!ehErro) {
+                setTimeout(() => {
+                    el.style.display = 'none';
+                }, 4000);
+            }
+        }
+
+        // Oculta a mensagem de alerta
+        function limparMensagem(elementId) {
+            const el = document.getElementById(elementId);
+            el.style.display = 'none';
+            el.textContent = '';
+        }
+
+        /* ===================================================================
+           PARTE A: LÓGICA DE CONTATOS
+           =================================================================== */
+
+        // Função responsável por Renderizar/Listar contatos na tela em Ordem Alfabética
+        function renderizarContatos() {
+            const listaEl = document.getElementById('lista-contatos');
+            const qtdEl = document.getElementById('qtd-contatos');
+
+            // Ordena o array de contatos em ordem alfabética por nome
+            contatos.sort((a, b) => a.nome.localeCompare(b.nome, 'pt-BR', { sensitivity: 'base' }));
+
+            // Atualiza o contador de contatos
+            qtdEl.textContent = `${contatos.length} ${contatos.length === 1 ? 'contato' : 'contatos'}`;
+
+            // Se a lista estiver vazia, exibe estado vazio
+            if (contatos.length === 0) {
+                listaEl.innerHTML = `<div class="empty-state">Nenhum contato cadastrado até o momento.</div>`;
+                atualizarDropdownContatos(); // Atualiza o select de compromissos
+                return;
+            }
+
+            // Constrói o HTML da lista de contatos
+            let html = '';
+            contatos.forEach(c => {
+                html += `
+                    <div class="item-card">
+                        <div class="item-info">
+                            <div class="item-title">${escapeHTML(c.nome)}</div>
+                            <div class="item-details">
+                                <span>📞 ${escapeHTML(c.telefone)}</span>
+                                ${c.email ? `<span>✉️ ${escapeHTML(c.email)}</span>` : ''}
+                            </div>
+                        </div>
+                        <div class="btn-group">
+                            <button class="btn btn-edit" onclick="prepararEdicaoContato('${c.id}')">✏️ Editar</button>
+                            <button class="btn btn-danger" onclick="excluirContato('${c.id}')">🗑️ Excluir</button>
+                        </div>
+                    </div>
+                `;
+            });
+
+            listaEl.innerHTML = html;
+
+            // Atualiza as opções do dropdown de contatos no formulário de compromissos
+            atualizarDropdownContatos();
+        }
+
+        // Função de Validação e Salvamento (Criação ou Edição) de Contato
+        function salvarContato(event) {
+            event.preventDefault(); // Impede o recarregamento da página
+
+            limparMensagem('mensagem-contato');
+
+            const id = document.getElementById('contato-id').value;
+            const nome = document.getElementById('contato-nome').value.trim();
+            const telefone = document.getElementById('contato-telefone').value.trim();
+            const email = document.getElementById('contato-email').value.trim();
+
+            // VALIDAÇÃO DOS CAMPOS OBRIGATÓRIOS
+            if (!nome && !telefone) {
+                exhibirMensagemErro('mensagem-contato', 'Por favor, preencha os campos obrigatórios: Nome e Telefone.');
+                return;
+            }
+            if (!nome) {
+                exhibirMensagemErro('mensagem-contato', 'O campo Nome é obrigatório e precisa ser corrigido.');
+                return;
+            }
+            if (!telefone) {
+                exhibirMensagemErro('mensagem-contato', 'O campo Telefone é obrigatório e precisa ser corrigido.');
+                return;
+            }
+
+            // Se existir ID, altera um contato existente; senão, cria um novo
+            if (id) {
+                const index = contatos.findIndex(c => c.id === id);
+                if (index !== -1) {
+                    contatos[index] = { id, nome, telefone, email };
+                    exibirMensagem('mensagem-contato', 'Contato atualizado com sucesso!', false);
+                }
+            } else {
+                const novoContato = {
+                    id: Date.now().toString(), // Gera ID único com timestamp
+                    nome,
+                    telefone,
+                    email
+                };
+                contatos.push(novoContato);
+                exibirMensagem('mensagem-contato', 'Contato cadastrado com sucesso!', false);
+            }
+
+            resetarFormularioContato();
+            renderizarContatos();
+        }
+
+        // Auxiliar para erro de mensagens de contato
+        function exhibirMensagemErro(id, msg) {
+            exibirMensagem(id, msg, true);
+        }
+
+        // Prepara o formulário para edição com os dados do contato escolhido
+        function prepararEdicaoContato(id) {
+            const contato = contatos.find(c => c.id === id);
+            if (!contato) return;
+
+            document.getElementById('contato-id').value = contato.id;
+            document.getElementById('contato-nome').value = contato.nome;
+            document.getElementById('contato-telefone').value = contato.telefone;
+            document.getElementById('contato-email').value = contato.email || '';
+
+            document.getElementById('titulo-form-contato').textContent = '✏️ Editar Contato';
+            document.getElementById('btn-salvar-contato').textContent = 'Atualizar Contato';
+            document.getElementById('btn-cancelar-contato').style.display = 'inline-flex';
+
+            limparMensagem('mensagem-contato');
+            // Rola suavemente até o formulário
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // Cancela a edição e limpa os campos do formulário de contato
+        function resetarFormularioContato() {
+            document.getElementById('form-contato').reset();
+            document.getElementById('contato-id').value = '';
+            document.getElementById('titulo-form-contato').textContent = '➕ Novo Contato';
+            document.getElementById('btn-salvar-contato').textContent = 'Salvar Contato';
+            document.getElementById('btn-cancelar-contato').style.display = 'none';
+        }
+
+        // Exclui um contato pelo ID
+        function excluirContato(id) {
+            // Remove o contato da lista
+            contatos = contatos.filter(c => c.id !== id);
+
+            // Opcional: Se houver compromissos vinculados a este contato, remove o vínculo
+            compromissos.forEach(comp => {
+                if (comp.contatoId === id) {
+                    comp.contatoId = '';
+                }
+            });
+
+            exibirMensagem('mensagem-contato', 'Contato excluído com sucesso.', false);
+            renderizarContatos();
+            renderizarCompromissos(); // Atualiza compromissos pois a vinculação pode ter mudado
+        }
+
+        /* ===================================================================
+           PARTE B: LÓGICA DE COMPROMISSOS
+           =================================================================== */
+
+        // Atualiza as opções do elemento <select> de contatos no formulário de compromissos
+        function atualizarDropdownContatos() {
+            const selectEl = document.getElementById('compromisso-contato');
+            const valorAtual = selectEl.value;
+
+            // Limpa as opções atuais deixando apenas a padrão
+            selectEl.innerHTML = '<option value="">-- Selecione um contato registrado --</option>';
+
+            // Adiciona contatos ordenados
+            contatos.forEach(c => {
+                const option = document.createElement('option');
+                option.value = c.id;
+                option.textContent = `${c.nome} (${c.telefone})`;
+                selectEl.appendChild(option);
+            });
+
+            // Re-seleciona se o valor anterior ainda existir
+            selectEl.value = valorAtual;
+        }
+
+        // Função responsável por Renderizar/Listar compromissos ordenados por data e horário
+        function renderizarCompromissos() {
+            const listaEl = document.getElementById('lista-compromissos');
+            const qtdEl = document.getElementById('qtd-compromissos');
+
+            // Ordena compromissos por Data e depois por Horário
+            compromissos.sort((a, b) => {
+                const dataA = `${a.data}T${a.horario}`;
+                const dataB = `${b.data}T${b.horario}`;
+                return dataA.localeCompare(dataB);
+            });
+
+            qtdEl.textContent = `${compromissos.length} ${compromissos.length === 1 ? 'compromisso' : 'compromissos'}`;
+
+            if (compromissos.length === 0) {
+                listaEl.innerHTML = `<div class="empty-state">Nenhum compromisso agendado até o momento.</div>`;
+                return;
+            }
+
+            let html = '';
+            compromissos.forEach(comp => {
+                // Busca o nome do contato vinculado, se houver
+                const contatoVinculado = contatos.find(c => c.id === comp.contatoId);
+                const nomeContato = contatoVinculado ? contatoVinculado.nome : null;
+
+                // Formata a data para padrão brasileiro (DD/MM/AAAA)
+                const dataFormatada = formatarDataBR(comp.data);
+
+                html += `
+                    <div class="item-card">
+                        <div class="item-info">
+                            <div class="item-title">${escapeHTML(comp.titulo)}</div>
+                            <div class="item-details">
+                                <span>📅 ${dataFormatada}</span>
+                                <span>⏰ ${comp.horario}</span>
+                                ${nomeContato ? `<span class="tag-linked-contact">👤 Contato: ${escapeHTML(nomeContato)}</span>` : ''}
+                            </div>
+                        </div>
+                        <div class="btn-group">
+                            <button class="btn btn-edit" onclick="prepararEdicaoCompromisso('${comp.id}')">✏️ Editar</button>
+                            <button class="btn btn-danger" onclick="excluirCompromisso('${comp.id}')">🗑️ Excluir</button>
+                        </div>
+                    </div>
+                `;
+            });
+
+            listaEl.innerHTML = html;
+        }
+
+        // Função de Validação e Salvamento de Compromissos
+        function salvarCompromisso(event) {
+            event.preventDefault(); // Evita atualização da página
+
+            limparMensagem('mensagem-compromisso');
+
+            const id = document.getElementById('compromisso-id').value;
+            const titulo = document.getElementById('compromisso-titulo').value.trim();
+            const data = document.getElementById('compromisso-data').value;
+            const horario = document.getElementById('compromisso-horario').value;
+            const contatoId = document.getElementById('compromisso-contato').value;
+
+            // VALIDAÇÃO DOS CAMPOS OBRIGATÓRIOS
+            let erros = [];
+            if (!titulo) erros.push('Título');
+            if (!data) erros.push('Data');
+            if (!horario) erros.push('Horário');
+
+            if (erros.length > 0) {
+                exibirMensagem('mensagem-compromisso', `Por favor, preencha o(s) campo(s) obrigatório(s): ${erros.join(', ')}.`, true);
+                return;
+            }
+
+            // Se houver ID altera, caso contrário inclui novo registro
+            if (id) {
+                const index = compromissos.findIndex(c => c.id === id);
+                if (index !== -1) {
+                    compromissos[index] = { id, titulo, data, horario, contatoId };
+                    exibirMensagem('mensagem-compromisso', 'Compromisso atualizado com sucesso!', false);
+                }
+            } else {
+                const novoCompromisso = {
+                    id: Date.now().toString(),
+                    titulo,
+                    data,
+                    horario,
+                    contatoId
+                };
+                compromissos.push(novoCompromisso);
+                exibirMensagem('mensagem-compromisso', 'Compromisso agendado com sucesso!', false);
+            }
+
+            resetarFormularioCompromisso();
+            renderizarCompromissos();
+        }
+
+        // Prepara formulário para editar compromisso selecionado
+        function prepararEdicaoCompromisso(id) {
+            const comp = compromissos.find(c => c.id === id);
+            if (!comp) return;
+
+            document.getElementById('compromisso-id').value = comp.id;
+            document.getElementById('compromisso-titulo').value = comp.titulo;
+            document.getElementById('compromisso-data').value = comp.data;
+            document.getElementById('compromisso-horario').value = comp.horario;
+            document.getElementById('compromisso-contato').value = comp.contatoId || '';
+
+            document.getElementById('titulo-form-compromisso').textContent = '✏️ Editar Compromisso';
+            document.getElementById('btn-salvar-compromisso').textContent = 'Atualizar Compromisso';
+            document.getElementById('btn-cancelar-compromisso').style.display = 'inline-flex';
+
+            limparMensagem('mensagem-compromisso');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // Limpa e reseta formulário de compromisso
+        function resetarFormularioCompromisso() {
+            document.getElementById('form-compromisso').reset();
+            document.getElementById('compromisso-id').value = '';
+            document.getElementById('titulo-form-compromisso').textContent = '➕ Novo Compromisso';
+            document.getElementById('btn-salvar-compromisso').textContent = 'Salvar Compromisso';
+            document.getElementById('btn-cancelar-compromisso').style.display = 'none';
+        }
+
+        // Exclui compromisso selecionado
+        function excluirCompromisso(id) {
+            compromissos = compromissos.filter(c => c.id !== id);
+            exibirMensagem('mensagem-compromisso', 'Compromisso excluído com sucesso.', false);
+            renderizarCompromissos();
+        }
+
+        /* ===================================================================
+           FUNÇÕES AUXILIARES E INICIALIZAÇÃO DA APLICAÇÃO
+           =================================================================== */
+
+        // Converte data do formato 'AAAA-MM-DD' para 'DD/MM/AAAA'
+        function formatarDataBR(dataIso) {
+            if (!dataIso) return '';
+            const partes = dataIso.split('-');
+            if (partes.length !== 3) return dataIso;
+            return `${partes[2]}/${partes[1]}/${partes[0]}`;
+        }
+
+        // Segurança: Evita injeção de código XSS ao exibir textos digitados pelo usuário
+        function escapeHTML(str) {
+            if (!str) return '';
+            return str
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#039;');
+        }
+
+        // Inicializa as listas ao carregar a página
+        window.onload = function() {
+            renderizarContatos();
+            renderizarCompromissos();
+                    }

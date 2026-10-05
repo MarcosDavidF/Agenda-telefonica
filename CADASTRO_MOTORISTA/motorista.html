@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cadastro de Motorista</title>
+      <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+
+
+    <h1><strong>Motoristas</strong></h1>
+    <h3>Dados do Motorista</h3>
+    <div>
+        <div class="formulario">
+
+            <div class="cadastro-motorista">
+
+                <!-- AREA DA FOTO  -->
+
+            <div class="facial">
+                <label for="facial">Enviar Foto(facial)</label>
+                <div class="preview">
+                    <span id="textopreview">Nenhuma foto selecionada</span>
+                    <img id="imagemfacial" alt="Pré-visualização">
+                </div>
+                <input type="file" id="facial" accept="image/*">
+            </div>
+
+            <div class="campo nome">
+                <label for="nome">Nome<span>*</span></label>
+                <input type="text" id="nome" name="nome" required>
+            </div>
+
+            <div class="campo genero">
+                <label for="genero">Gênero<span>*</span></label>
+                <select name="genero" id="genero">
+                    <option value="">(Selecione)</option>
+                    <option value="">(Homem)</option>
+                    <option value="">(Mulher)</option>
+                </select>
+            </div>
+
+            <div class="campo data nascimento">
+                <label for="data_nascimento">Data de Nascimento<span>*</span></label>
+                <input type="date" id="data_nascimento" name="data_nascimento" required>
+            </div>
+
+            <div class="campo cpf">
+                <label for="cpf">CPF(Motorista)<span>*</span></label>
+                <input type="text" inputmode="numeric" id="cpf" name="cpf" maxlength="11" required>
+            </div>
+
+            <div class="campo rg">
+                <label for="rg">RG<span>*</span></label>
+                <input type="text" inputmode="numeric" id="rg" name="rg" maxlength="9" required>
+            </div>
+
+            <div class="campo data emissao">
+                <label for="data_emissao">Data de Emissão<span>*</span></label>
+                <input type="text" id="data_emissao" name="data_emissao" required>
+            </div>
+
+            <div class="campo orgao exp">
+                <label for="orgao_exp">Orgão Exp.<span>*</span></label>
+                <input type="text" id="orgao_exp" name="orgao_exp" required>
+            </div>
+
+            <div class="campo controle cliente">
+                <label for="controle_cliente">Controle do Cliente<span>*</span></label>
+                <input type="text" id="controle_cliente" name="controle_cliente" required>
+            </div>
+            
+            <div class="campo nome pai">
+                <label for="nome_pai">Nome do Pai<span>*</span></label>
+                <input type="text" id="nome_pai" name="nome_pai" required>
+            </div>
+
+            <div class="campo nome mae">
+                <label for="nome_mae">Nome da Mãe<span>*</span></label>
+                <input type="text" id="nome_mae" name="nome_mae" required>
+            </div>
+
+             <div class="campo funcao">
+                <label for="funcao">Função<span>*</span></label>
+                <select type="text" id="funcao" name="funcao" required>
+                <option value="">(Selecionar)</option>
+                </select>  
+            </div>
+
+             <div class="campo perfil">
+                <label for="perfil">Perfil<span>*</span></label>
+                <select type="text" id="perfil" name="perfil" required>
+                <option value="">(Selecionar)</option>
+                </select>
+            </div>
+
+             <div class="campo cnpj">
+                <label for="cnpj">CNPJ(Empresa)<span>*</span></label>
+                <input type="text" id="cnpj" name="cnpj" required>
+            </div>
+
+             <div class="campo imagem cnh">
+                <label for="imagem_cnh">Imagem CNH<span>*</span></label>
+                <input type="text" id="imagem_cnh" name="imagem_cnh" required>
+            </div>
+
+             <div class="campo passaporte">
+                <label for="passaporte">Passaporte<span>*</span></label>
+                <input type="text" id="passaporte" name="passaporte" required>
+            </div>
+            
+        </div>
+    </div>
+    
+</body>
+</html>

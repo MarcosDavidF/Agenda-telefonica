@@ -1,0 +1,820 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Agenda Telefônica & Agendamento de Compromissos</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+          },
+        }
+      }
+    }
+  </script>
+  <style>
+    /* Custom scrollbar styling for webkit browsers */
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: rgba(0, 0, 0, 0.05);
+    }
+    ::-webkit-scrollbar-thumb {
+      background: rgba(156, 163, 175, 0.5);
+      border-radius: 9999px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: rgba(107, 114, 128, 0.8);
+    }
+  </style>
+</head>
+<body class="bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-100 min-h-screen transition-colors duration-200 font-sans flex flex-col">
+
+  <header class="bg-indigo-600 dark:bg-indigo-900 text-white shadow-md sticky top-0 z-30">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+      <div class="flex items-center space-x-3">
+        <div class="p-2 bg-indigo-500 dark:bg-indigo-800 rounded-xl shadow-inner">
+          <i class="fa-solid me-0.5 fa-address-book text-xl"></i>
+        </div>
+        <h1 class="text-xl font-bold tracking-tight">Agenda Pro</h1>
+      </div>
+
+      <div class="flex items-center space-x-2 sm:space-x-4">
+        <!-- Tab Switches -->
+        <nav class="flex bg-indigo-700 dark:bg-indigo-950 p-1 rounded-xl text-sm font-medium">
+          <button id="nav-contacts-btn" onclick="switchTab('contacts')" class="px-3 sm:px-4 py-1.5 rounded-lg flex items-center space-x-2 transition-all bg-white text-indigo-700 shadow-sm dark:bg-indigo-800 dark:text-white">
+            <i class="fa-solid fa-user"></i>
+            <span class="hidden sm:inline">Contatos</span>
+          </button>
+          <button id="nav-appointments-btn" onclick="switchTab('appointments')" class="px-3 sm:px-4 py-1.5 rounded-lg flex items-center space-x-2 transition-all text-indigo-100 hover:text-white">
+            <i class="fa-solid fa-calendar-days"></i>
+            <span class="hidden sm:inline">Compromissos</span>
+          </button>
+        </nav>
+
+        <!-- Theme Toggle -->
+        <button id="theme-toggle-btn" onclick="toggleDarkMode()" class="p-2 rounded-xl bg-indigo-700 dark:bg-indigo-800 hover:bg-indigo-800 dark:hover:bg-indigo-700 text-indigo-100 transition-colors" title="Alternar tema">
+          <i id="theme-icon" class="fa-solid fa-moon"></i>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6">
+    
+    <!-- Notification Toast Box -->
+    <div id="toast-container" class="fixed bottom-5 right-5 z-50 flex flex-col space-y-2 pointer-events-none"></div>
+
+    <section class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+      <div class="bg-white dark:bg-slate-800 p-4 rounded-2xl shadow-sm border border-slate-200/80 dark:border-slate-700/60 flex items-center space-x-4">
+        <div class="p-3 bg-blue-100 dark:bg-blue-900/40 text-blue-600 dark:text-blue-400 rounded-xl">
+          <i class="fa-solid fa-users text-xl"></i>
+        </div>
+        <div>
+          <p class="text-xs text-slate-500 dark:text-slate-400 font-medium">Total Contatos</p>
+          <p id="stat-total-contacts" class="text-xl font-bold">0</p>
+        </div>
+      </div>
+
+      <div class="bg-white dark:bg-slate-800 p-4 rounded-2xl shadow-sm border border-slate-200/80 dark:border-slate-700/60 flex items-center space-x-4">
+        <div class="p-3 bg-indigo-100 dark:bg-indigo-900/40 text-indigo-600 dark:text-indigo-400 rounded-xl">
+          <i class="fa-solid fa-calendar-check text-xl"></i>
+        </div>
+        <div>
+          <p class="text-xs text-slate-500 dark:text-slate-400 font-medium">Compromissos</p>
+          <p id="stat-total-appointments" class="text-xl font-bold">0</p>
+        </div>
+      </div>
+
+      <div class="bg-white dark:bg-slate-800 p-4 rounded-2xl shadow-sm border border-slate-200/80 dark:border-slate-700/60 flex items-center space-x-4">
+        <div class="p-3 bg-amber-100 dark:bg-amber-900/40 text-amber-600 dark:text-amber-400 rounded-xl">
+          <i class="fa-solid fa-clock text-xl"></i>
+        </div>
+        <div>
+          <p class="text-xs text-slate-500 dark:text-slate-400 font-medium">Hoje</p>
+          <p id="stat-today-appointments" class="text-xl font-bold">0</p>
+        </div>
+      </div>
+
+      <div class="bg-white dark:bg-slate-800 p-4 rounded-2xl shadow-sm border border-slate-200/80 dark:border-slate-700/60 flex items-center space-x-4">
+        <div class="p-3 bg-emerald-100 dark:bg-emerald-900/40 text-emerald-600 dark:text-emerald-400 rounded-xl">
+          <i class="fa-solid fa-star text-xl"></i>
+        </div>
+        <div>
+          <p class="text-xs text-slate-500 dark:text-slate-400 font-medium">Favoritos</p>
+          <p id="stat-favorite-contacts" class="text-xl font-bold">0</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="section-contacts" class="space-y-6">
+      <!-- Toolbar -->
+      <div class="flex flex-col sm:flex-row justify-between items-stretch sm:items-center gap-3 bg-white dark:bg-slate-800 p-4 rounded-2xl shadow-sm border border-slate-200/80 dark:border-slate-700/60">
+        <div class="relative flex-grow max-w-md">
+          <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400"></i>
+          <input type="text" id="contact-search" oninput="renderContacts()" placeholder="Buscar por nome, telefone ou e-mail..." class="w-full pl-10 pr-4 py-2 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all">
+        </div>
+
+        <div class="flex items-center gap-2">
+          <button onclick="toggleContactFavoritesFilter()" id="filter-fav-btn" class="px-3 py-2 border border-slate-200 dark:border-slate-700 rounded-xl text-sm font-medium hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors flex items-center space-x-1.5">
+            <i class="fa-solid fa-star text-amber-500"></i>
+            <span>Favoritos</span>
+          </button>
+          
+          <button onclick="openContactModal()" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-sm font-medium transition-colors shadow-sm flex items-center space-x-2">
+            <i class="fa-solid fa-plus"></i>
+            <span>Novo Contato</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Contacts List / Grid -->
+      <div id="contacts-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <!-- Contacts rendered dynamically -->
+      </div>
+      <div id="contacts-empty" class="hidden text-center py-12 bg-white dark:bg-slate-800 rounded-2xl border border-dashed border-slate-300 dark:border-slate-700">
+        <i class="fa-solid fa-user-slash text-4xl text-slate-300 dark:text-slate-600 mb-3"></i>
+        <p class="text-slate-500 dark:text-slate-400 font-medium">Nenhum contato encontrado.</p>
+        <button onclick="openContactModal()" class="mt-3 px-4 py-1.5 text-xs bg-indigo-50 dark:bg-indigo-900/40 text-indigo-600 dark:text-indigo-400 font-semibold rounded-lg hover:bg-indigo-100 transition-colors">Cadastrar Agora</button>
+      </div>
+    </section>
+
+    <section id="section-appointments" class="hidden space-y-6">
+      <!-- Toolbar -->
+      <div class="flex flex-col sm:flex-row justify-between items-stretch sm:items-center gap-3 bg-white dark:bg-slate-800 p-4 rounded-2xl shadow-sm border border-slate-200/80 dark:border-slate-700/60">
+        <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 flex-grow max-w-xl">
+          <div class="relative flex-grow">
+            <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400"></i>
+            <input type="text" id="appointment-search" oninput="renderAppointments()" placeholder="Buscar compromisso..." class="w-full pl-10 pr-4 py-2 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all">
+          </div>
+          <input type="date" id="appointment-date-filter" onchange="renderAppointments()" class="px-3 py-2 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
+        </div>
+
+        <div class="flex items-center gap-2">
+          <button onclick="clearAppointmentFilter()" class="px-3 py-2 text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200 text-xs font-medium">Limpar Filtros</button>
+          <button onclick="openAppointmentModal()" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-sm font-medium transition-colors shadow-sm flex items-center space-x-2">
+            <i class="fa-solid fa-plus"></i>
+            <span>Novo Compromisso</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Appointments Table / Cards -->
+      <div id="appointments-container" class="bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-200/80 dark:border-slate-700/60 overflow-hidden">
+        <div class="overflow-x-auto">
+          <table class="w-full text-left text-sm">
+            <thead class="bg-slate-50 dark:bg-slate-900/50 text-slate-500 dark:text-slate-400 uppercase text-[11px] font-semibold tracking-wider border-b border-slate-200 dark:border-slate-700">
+              <tr>
+                <th class="py-3.5 px-4">Título / Descrição</th>
+                <th class="py-3.5 px-4">Data & Hora</th>
+                <th class="py-3.5 px-4">Contato Vinculado</th>
+                <th class="py-3.5 px-4">Status</th>
+                <th class="py-3.5 px-4 text-right">Ações</th>
+              </tr>
+            </thead>
+            <tbody id="appointments-tbody" class="divide-y divide-slate-100 dark:divide-slate-700/50">
+              <!-- Appointments rendered dynamically -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div id="appointments-empty" class="hidden text-center py-12 bg-white dark:bg-slate-800 rounded-2xl border border-dashed border-slate-300 dark:border-slate-700">
+        <i class="fa-solid fa-calendar-xmark text-4xl text-slate-300 dark:text-slate-600 mb-3"></i>
+        <p class="text-slate-500 dark:text-slate-400 font-medium">Nenhum compromisso agendado.</p>
+        <button onclick="openAppointmentModal()" class="mt-3 px-4 py-1.5 text-xs bg-indigo-50 dark:bg-indigo-900/40 text-indigo-600 dark:text-indigo-400 font-semibold rounded-lg hover:bg-indigo-100 transition-colors">Agendar Agora</button>
+      </div>
+    </section>
+
+    <section class="mt-8 pt-6 border-t border-slate-200 dark:border-slate-800 flex flex-wrap justify-between items-center gap-4 text-xs text-slate-500 dark:text-slate-400">
+      <div>
+        <span>Gerenciamento de Dados do Sistema</span>
+      </div>
+      <div class="flex items-center space-x-3">
+        <button onclick="exportData()" class="hover:text-indigo-600 dark:hover:text-indigo-400 flex items-center space-x-1">
+          <i class="fa-solid fa-download"></i>
+          <span>Exportar Backup (JSON)</span>
+        </button>
+        <span>•</span>
+        <label class="hover:text-indigo-600 dark:hover:text-indigo-400 flex items-center space-x-1 cursor-pointer">
+          <i class="fa-solid fa-upload"></i>
+          <span>Importar Backup</span>
+          <input type="file" id="import-file" accept=".json" onchange="importData(event)" class="hidden">
+        </label>
+      </div>
+    </section>
+  </main>
+
+  <div id="contact-modal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm transition-opacity">
+    <div class="bg-white dark:bg-slate-800 rounded-2xl shadow-xl w-full max-w-md overflow-hidden transform transition-all border border-slate-200 dark:border-slate-700">
+      <div class="px-6 py-4 border-b border-slate-100 dark:border-slate-700 flex justify-between items-center">
+        <h3 id="contact-modal-title" class="font-bold text-lg text-slate-800 dark:text-white">Novo Contato</h3>
+        <button onclick="closeContactModal()" class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200"><i class="fa-solid fa-xmark text-lg"></i></button>
+      </div>
+      <form id="contact-form" onsubmit="saveContact(event)" class="p-6 space-y-4">
+        <input type="hidden" id="contact-id">
+        
+        <div>
+          <label class="block text-xs font-semibold text-slate-600 dark:text-slate-300 uppercase tracking-wider mb-1">Nome Completo *</label>
+          <input type="text" id="contact-name" required class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
+        </div>
+
+        <div>
+          <label class="block text-xs font-semibold text-slate-600 dark:text-slate-300 uppercase tracking-wider mb-1">Telefone *</label>
+          <input type="tel" id="contact-phone" required placeholder="(00) 00000-0000" class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
+        </div>
+
+        <div>
+          <label class="block text-xs font-semibold text-slate-600 dark:text-slate-300 uppercase tracking-wider mb-1">E-mail</label>
+          <input type="email" id="contact-email" placeholder="exemplo@email.com" class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
+        </div>
+
+        <div>
+          <label class="block text-xs font-semibold text-slate-600 dark:text-slate-300 uppercase tracking-wider mb-1">Categoria</label>
+          <select id="contact-category" class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
+            <option value="Pessoal">Pessoal</option>
+            <option value="Trabalho">Trabalho</option>
+            <option value="Família">Família</option>
+            <option value="Outro">Outro</option>
+          </select>
+        </div>
+
+        <div class="flex items-center space-x-2 pt-2">
+          <input type="checkbox" id="contact-favorite" class="w-4 h-4 text-indigo-600 rounded border-slate-300 focus:ring-indigo-500">
+          <label for="contact-favorite" class="text-sm font-medium text-slate-700 dark:text-slate-300">Marcar como Favorito</label>
+        </div>
+
+        <div class="pt-4 flex justify-end space-x-3">
+          <button type="button" onclick="closeContactModal()" class="px-4 py-2 border border-slate-200 dark:border-slate-700 rounded-xl text-sm font-medium hover:bg-slate-50 dark:hover:bg-slate-700">Cancelar</button>
+          <button type="submit" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-sm font-medium transition-colors">Salvar</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div id="appointment-modal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm transition-opacity">
+    <div class="bg-white dark:bg-slate-800 rounded-2xl shadow-xl w-full max-w-md overflow-hidden transform transition-all border border-slate-200 dark:border-slate-700">
+      <div class="px-6 py-4 border-b border-slate-100 dark:border-slate-700 flex justify-between items-center">
+        <h3 id="appointment-modal-title" class="font-bold text-lg text-slate-800 dark:text-white">Novo Compromisso</h3>
+        <button onclick="closeAppointmentModal()" class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200"><i class="fa-solid fa-xmark text-lg"></i></button>
+      </div>
+      <form id="appointment-form" onsubmit="saveAppointment(event)" class="p-6 space-y-4">
+        <input type="hidden" id="appointment-id">
+        
+        <div>
+          <label class="block text-xs font-semibold text-slate-600 dark:text-slate-300 uppercase tracking-wider mb-1">Título *</label>
+          <input type="text" id="appointment-title" required placeholder="Ex: Reunião de Alinhamento" class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-semibold text-slate-600 dark:text-slate-300 uppercase tracking-wider mb-1">Data *</label>
+            <input type="date" id="appointment-date" required class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-600 dark:text-slate-300 uppercase tracking-wider mb-1">Hora *</label>
+            <input type="time" id="appointment-time" required class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-xs font-semibold text-slate-600 dark:text-slate-300 uppercase tracking-wider mb-1">Vincular Contato</label>
+          <select id="appointment-contact" class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
+            <!-- Populated dynamically -->
+          </select>
+        </div>
+
+        <div>
+          <label class="block text-xs font-semibold text-slate-600 dark:text-slate-300 uppercase tracking-wider mb-1">Descrição / Notas</label>
+          <textarea id="appointment-notes" rows="3" placeholder="Detalhes adicionais..." class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"></textarea>
+        </div>
+
+        <div class="pt-4 flex justify-end space-x-3">
+          <button type="button" onclick="closeAppointmentModal()" class="px-4 py-2 border border-slate-200 dark:border-slate-700 rounded-xl text-sm font-medium hover:bg-slate-50 dark:hover:bg-slate-700">Cancelar</button>
+          <button type="submit" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-sm font-medium transition-colors">Salvar</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    // System State
+    let contacts = [];
+    let appointments = [];
+    let showOnlyFavorites = false;
+    let currentTab = 'contacts';
+
+    // Initial Load & Mock Data
+    window.onload = function() {
+      loadStorage();
+      if (contacts.length === 0 && appointments.length === 0) {
+        seedInitialData();
+      }
+      initTheme();
+      renderAll();
+    };
+
+    // Storage Management
+    function loadStorage() {
+      const storedContacts = localStorage.getItem('agenda_contacts');
+      const storedAppointments = localStorage.getItem('agenda_appointments');
+      contacts = storedContacts ? JSON.parse(storedContacts) : [];
+      appointments = storedAppointments ? JSON.parse(storedAppointments) : [];
+    }
+
+    function saveStorage() {
+      localStorage.setItem('agenda_contacts', JSON.stringify(contacts));
+      localStorage.setItem('agenda_appointments', JSON.stringify(appointments));
+      updateStats();
+    }
+
+    function seedInitialData() {
+      contacts = [
+        { id: '1', name: 'Ana Silva', phone: '(11) 98765-4321', email: 'ana.silva@email.com', category: 'Trabalho', favorite: true },
+        { id: '2', name: 'Carlos Oliveira', phone: '(21) 99887-6655', email: 'carlos@email.com', category: 'Pessoal', favorite: false },
+        { id: '3', name: 'Mariana Santos', phone: '(31) 97123-4567', email: 'mariana.santos@email.com', category: 'Família', favorite: true }
+      ];
+
+      const today = new Date().toISOString().split('T')[0];
+      appointments = [
+        { id: '101', title: 'Reunião de Alinhamento', date: today, time: '14:00', contactId: '1', notes: 'Discutir andamento do projeto semanal.' },
+        { id: '102', title: 'Almoço em Família', date: today, time: '12:30', contactId: '3', notes: 'Restaurante Central.' }
+      ];
+      saveStorage();
+    }
+
+    // UI Tab Switching
+    function switchTab(tab) {
+      currentTab = tab;
+      const contactsSec = document.getElementById('section-contacts');
+      const appointmentsSec = document.getElementById('section-appointments');
+      const contactsBtn = document.getElementById('nav-contacts-btn');
+      const appointmentsBtn = document.getElementById('nav-appointments-btn');
+
+      if (tab === 'contacts') {
+        contactsSec.classList.remove('hidden');
+        appointmentsSec.classList.add('hidden');
+        contactsBtn.className = "px-3 sm:px-4 py-1.5 rounded-lg flex items-center space-x-2 transition-all bg-white text-indigo-700 shadow-sm dark:bg-indigo-800 dark:text-white";
+        appointmentsBtn.className = "px-3 sm:px-4 py-1.5 rounded-lg flex items-center space-x-2 transition-all text-indigo-100 hover:text-white";
+        renderContacts();
+      } else {
+        contactsSec.classList.add('hidden');
+        appointmentsSec.classList.remove('hidden');
+        appointmentsBtn.className = "px-3 sm:px-4 py-1.5 rounded-lg flex items-center space-x-2 transition-all bg-white text-indigo-700 shadow-sm dark:bg-indigo-800 dark:text-white";
+        contactsBtn.className = "px-3 sm:px-4 py-1.5 rounded-lg flex items-center space-x-2 transition-all text-indigo-100 hover:text-white";
+        renderAppointments();
+      }
+    }
+
+    // Theme Management
+    function initTheme() {
+      if (localStorage.getItem('theme') === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+        document.documentElement.classList.add('dark');
+        document.getElementById('theme-icon').className = 'fa-solid fa-sun';
+      } else {
+        document.documentElement.classList.remove('dark');
+        document.getElementById('theme-icon').className = 'fa-solid fa-moon';
+      }
+    }
+
+    function toggleDarkMode() {
+      if (document.documentElement.classList.contains('dark')) {
+        document.documentElement.classList.remove('dark');
+        localStorage.setItem('theme', 'light');
+        document.getElementById('theme-icon').className = 'fa-solid fa-moon';
+      } else {
+        document.documentElement.classList.add('dark');
+        localStorage.setItem('theme', 'dark');
+        document.getElementById('theme-icon').className = 'fa-solid fa-sun';
+      }
+    }
+
+    function renderContacts() {
+      const search = document.getElementById('contact-search').value.toLowerCase();
+      const grid = document.getElementById('contacts-grid');
+      const emptyState = document.getElementById('contacts-empty');
+
+      const filtered = contacts.filter(c => {
+        const matchesSearch = c.name.toLowerCase().includes(search) || 
+                              c.phone.includes(search) || 
+                              (c.email && c.email.toLowerCase().includes(search));
+        const matchesFav = showOnlyFavorites ? c.favorite : true;
+        return matchesSearch && matchesFav;
+      });
+
+      grid.innerHTML = '';
+
+      if (filtered.length === 0) {
+        emptyState.classList.remove('hidden');
+      } else {
+        emptyState.classList.add('hidden');
+        filtered.forEach(c => {
+          const card = document.createElement('div');
+          card.className = "bg-white dark:bg-slate-800 rounded-2xl p-5 shadow-sm border border-slate-200/80 dark:border-slate-700/60 hover:shadow-md transition-all flex flex-col justify-between";
+          
+          card.innerHTML = `
+            <div>
+              <div class="flex items-start justify-between">
+                <div class="flex items-center space-x-3">
+                  <div class="w-10 h-10 rounded-full bg-indigo-100 dark:bg-indigo-900/60 text-indigo-600 dark:text-indigo-300 font-bold flex items-center justify-center text-base">
+                    ${c.name.charAt(0).toUpperCase()}
+                  </div>
+                  <div>
+                    <h4 class="font-semibold text-slate-800 dark:text-white leading-tight">${escapeHtml(c.name)}</h4>
+                    <span class="inline-block mt-1 px-2 py-0.5 text-[10px] font-semibold bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 rounded-md">
+                      ${escapeHtml(c.category || 'Geral')}
+                    </span>
+                  </div>
+                </div>
+                <button onclick="toggleFavorite('${c.id}')" class="text-slate-300 hover:text-amber-500 transition-colors">
+                  <i class="fa-solid fa-star text-lg ${c.favorite ? 'text-amber-400' : ''}"></i>
+                </button>
+              </div>
+
+              <div class="mt-4 space-y-2 text-xs text-slate-600 dark:text-slate-300">
+                <p class="flex items-center space-x-2">
+                  <i class="fa-solid fa-phone text-slate-400 w-4"></i>
+                  <span>${escapeHtml(c.phone)}</span>
+                </p>
+                ${c.email ? `
+                  <p class="flex items-center space-x-2 truncate">
+                    <i class="fa-solid fa-envelope text-slate-400 w-4"></i>
+                    <span class="truncate">${escapeHtml(c.email)}</span>
+                  </p>
+                ` : ''}
+              </div>
+            </div>
+
+            <div class="mt-5 pt-3 border-t border-slate-100 dark:border-slate-700/50 flex justify-end space-x-2">
+              <button onclick="editContact('${c.id}')" class="p-1.5 text-slate-400 hover:text-indigo-600 dark:hover:text-indigo-400 text-xs transition-colors" title="Editar">
+                <i class="fa-solid fa-pen"></i>
+              </button>
+              <button onclick="deleteContact('${c.id}')" class="p-1.5 text-slate-400 hover:text-rose-600 text-xs transition-colors" title="Excluir">
+                <i class="fa-solid fa-trash"></i>
+              </button>
+            </div>
+          `;
+          grid.appendChild(card);
+        });
+      }
+      updateStats();
+    }
+
+    function toggleContactFavoritesFilter() {
+      showOnlyFavorites = !showOnlyFavorites;
+      const btn = document.getElementById('filter-fav-btn');
+      if (showOnlyFavorites) {
+        btn.classList.add('bg-amber-50', 'border-amber-300', 'text-amber-700', 'dark:bg-amber-900/20', 'dark:text-amber-300');
+      } else {
+        btn.classList.remove('bg-amber-50', 'border-amber-300', 'text-amber-700', 'dark:bg-amber-900/20', 'dark:text-amber-300');
+      }
+      renderContacts();
+    }
+
+    function toggleFavorite(id) {
+      contacts = contacts.map(c => c.id === id ? { ...c, favorite: !c.favorite } : c);
+      saveStorage();
+      renderContacts();
+    }
+
+    // Contact Modal Handlers
+    function openContactModal(contact = null) {
+      const modal = document.getElementById('contact-modal');
+      const title = document.getElementById('contact-modal-title');
+      const form = document.getElementById('contact-form');
+
+      if (contact) {
+        title.innerText = 'Editar Contato';
+        document.getElementById('contact-id').value = contact.id;
+        document.getElementById('contact-name').value = contact.name;
+        document.getElementById('contact-phone').value = contact.phone;
+        document.getElementById('contact-email').value = contact.email || '';
+        document.getElementById('contact-category').value = contact.category || 'Pessoal';
+        document.getElementById('contact-favorite').checked = !!contact.favorite;
+      } else {
+        title.innerText = 'Novo Contato';
+        form.reset();
+        document.getElementById('contact-id').value = '';
+      }
+
+      modal.classList.remove('hidden');
+    }
+
+    function closeContactModal() {
+      document.getElementById('contact-modal').classList.add('hidden');
+    }
+
+    function saveContact(e) {
+      e.preventDefault();
+      const id = document.getElementById('contact-id').value;
+      const name = document.getElementById('contact-name').value.trim();
+      const phone = document.getElementById('contact-phone').value.trim();
+      const email = document.getElementById('contact-email').value.trim();
+      const category = document.getElementById('contact-category').value;
+      const favorite = document.getElementById('contact-favorite').checked;
+
+      if (!name || !phone) {
+        showToast('Preencha os campos obrigatórios!', 'error');
+        return;
+      }
+
+      if (id) {
+        contacts = contacts.map(c => c.id === id ? { id, name, phone, email, category, favorite } : c);
+        showToast('Contato atualizado com sucesso!');
+      } else {
+        const newContact = { id: Date.now().toString(), name, phone, email, category, favorite };
+        contacts.push(newContact);
+        showToast('Contato cadastrado!');
+      }
+
+      saveStorage();
+      closeContactModal();
+      renderContacts();
+    }
+
+    function editContact(id) {
+      const contact = contacts.find(c => c.id === id);
+      if (contact) openContactModal(contact);
+    }
+
+    function deleteContact(id) {
+      if (confirm('Tem certeza que deseja excluir este contato? Os compromissos vinculados a ele perderão o vínculo.')) {
+        contacts = contacts.filter(c => c.id !== id);
+        // Unlink appointments
+        appointments = appointments.map(a => a.contactId === id ? { ...a, contactId: '' } : a);
+        saveStorage();
+        renderContacts();
+        showToast('Contato excluído.');
+      }
+    }
+
+    function renderAppointments() {
+      const search = document.getElementById('appointment-search').value.toLowerCase();
+      const dateFilter = document.getElementById('appointment-date-filter').value;
+      const tbody = document.getElementById('appointments-tbody');
+      const emptyState = document.getElementById('appointments-empty');
+      const container = document.getElementById('appointments-container');
+
+      const filtered = appointments.filter(a => {
+        const matchesSearch = a.title.toLowerCase().includes(search) || (a.notes && a.notes.toLowerCase().includes(search));
+        const matchesDate = dateFilter ? a.date === dateFilter : true;
+        return matchesSearch && matchesDate;
+      }).sort((a, b) => new Date(`${a.date}T${a.time}`) - new Date(`${b.date}T${b.time}`));
+
+      tbody.innerHTML = '';
+
+      if (filtered.length === 0) {
+        container.classList.add('hidden');
+        emptyState.classList.remove('hidden');
+      } else {
+        container.classList.remove('hidden');
+        emptyState.classList.add('hidden');
+
+        const todayStr = new Date().toISOString().split('T')[0];
+
+        filtered.forEach(a => {
+          const contact = contacts.find(c => c.id === a.contactId);
+          const tr = document.createElement('tr');
+          tr.className = "hover:bg-slate-50/50 dark:hover:bg-slate-700/30 transition-colors";
+
+          const isToday = a.date === todayStr;
+          
+          tr.innerHTML = `
+            <td class="py-3.5 px-4">
+              <div class="font-semibold text-slate-800 dark:text-white">${escapeHtml(a.title)}</div>
+              ${a.notes ? `<div class="text-xs text-slate-500 dark:text-slate-400 truncate max-w-xs">${escapeHtml(a.notes)}</div>` : ''}
+            </td>
+            <td class="py-3.5 px-4 whitespace-nowrap">
+              <div class="font-medium text-slate-700 dark:text-slate-200">${formatDate(a.date)}</div>
+              <div class="text-xs text-slate-500 dark:text-slate-400"><i class="fa-regular fa-clock mr-1"></i>${a.time}</div>
+            </td>
+            <td class="py-3.5 px-4 whitespace-nowrap">
+              ${contact ? `
+                <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-indigo-50 text-indigo-700 dark:bg-indigo-900/40 dark:text-indigo-300">
+                  <i class="fa-solid fa-user text-[10px] mr-1.5"></i>${escapeHtml(contact.name)}
+                </span>
+              ` : '<span class="text-xs text-slate-400 italic">Nenhum</span>'}
+            </td>
+            <td class="py-3.5 px-4 whitespace-nowrap">
+              ${isToday ? `
+                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-amber-100 text-amber-800 dark:bg-amber-900/50 dark:text-amber-300">
+                  Hoje
+                </span>
+              ` : `
+                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-slate-100 text-slate-600 dark:bg-slate-700 dark:text-slate-300">
+                  Agendado
+                </span>
+              `}
+            </td>
+            <td class="py-3.5 px-4 text-right space-x-2">
+              <button onclick="editAppointment('${a.id}')" class="text-slate-400 hover:text-indigo-600 dark:hover:text-indigo-400 text-xs transition-colors">
+                <i class="fa-solid fa-pen"></i>
+              </button>
+              <button onclick="deleteAppointment('${a.id}')" class="text-slate-400 hover:text-rose-600 text-xs transition-colors">
+                <i class="fa-solid fa-trash"></i>
+              </button>
+            </td>
+          `;
+          tbody.appendChild(tr);
+        });
+      }
+      updateStats();
+    }
+
+    function clearAppointmentFilter() {
+      document.getElementById('appointment-search').value = '';
+      document.getElementById('appointment-date-filter').value = '';
+      renderAppointments();
+    }
+
+    // Appointment Modal Handlers
+    function populateContactSelect(selectedId = '') {
+      const select = document.getElementById('appointment-contact');
+      select.innerHTML = '<option value="">Sem vínculo</option>';
+      contacts.forEach(c => {
+        const opt = document.createElement('option');
+        opt.value = c.id;
+        opt.innerText = c.name;
+        if (c.id === selectedId) opt.selected = true;
+        select.appendChild(opt);
+      });
+    }
+
+    function openAppointmentModal(app = null) {
+      const modal = document.getElementById('appointment-modal');
+      const title = document.getElementById('appointment-modal-title');
+      const form = document.getElementById('appointment-form');
+
+      populateContactSelect(app ? app.contactId : '');
+
+      if (app) {
+        title.innerText = 'Editar Compromisso';
+        document.getElementById('appointment-id').value = app.id;
+        document.getElementById('appointment-title').value = app.title;
+        document.getElementById('appointment-date').value = app.date;
+        document.getElementById('appointment-time').value = app.time;
+        document.getElementById('appointment-notes').value = app.notes || '';
+      } else {
+        title.innerText = 'Novo Compromisso';
+        form.reset();
+        document.getElementById('appointment-id').value = '';
+        document.getElementById('appointment-date').value = new Date().toISOString().split('T')[0];
+      }
+
+      modal.classList.remove('hidden');
+    }
+
+    function closeAppointmentModal() {
+      document.getElementById('appointment-modal').classList.add('hidden');
+    }
+
+    function saveAppointment(e) {
+      e.preventDefault();
+      const id = document.getElementById('appointment-id').value;
+      const title = document.getElementById('appointment-title').value.trim();
+      const date = document.getElementById('appointment-date').value;
+      const time = document.getElementById('appointment-time').value;
+      const contactId = document.getElementById('appointment-contact').value;
+      const notes = document.getElementById('appointment-notes').value.trim();
+
+      if (!title || !date || !time) {
+        showToast('Preencha os campos obrigatórios!', 'error');
+        return;
+      }
+
+      // Check conflict
+      const hasConflict = appointments.some(a => a.id !== id && a.date === date && a.time === time);
+      if (hasConflict) {
+        if (!confirm('Aviso: Já existe outro compromisso agendado para o mesmo horário. Deseja manter mesmo assim?')) {
+          return;
+        }
+      }
+
+      if (id) {
+        appointments = appointments.map(a => a.id === id ? { id, title, date, time, contactId, notes } : a);
+        showToast('Compromisso atualizado!');
+      } else {
+        const newApp = { id: Date.now().toString(), title, date, time, contactId, notes };
+        appointments.push(newApp);
+        showToast('Compromisso agendado!');
+      }
+
+      saveStorage();
+      closeAppointmentModal();
+      renderAppointments();
+    }
+
+    function editAppointment(id) {
+      const app = appointments.find(a => a.id === id);
+      if (app) openAppointmentModal(app);
+    }
+
+    function deleteAppointment(id) {
+      if (confirm('Deseja excluir este compromisso?')) {
+        appointments = appointments.filter(a => a.id !== id);
+        saveStorage();
+        renderAppointments();
+        showToast('Compromisso excluído.');
+      }
+    }
+
+    function renderAll() {
+      renderContacts();
+      renderAppointments();
+    }
+
+    function updateStats() {
+      const todayStr = new Date().toISOString().split('T')[0];
+      
+      document.getElementById('stat-total-contacts').innerText = contacts.length;
+      document.getElementById('stat-total-appointments').innerText = appointments.length;
+      document.getElementById('stat-today-appointments').innerText = appointments.filter(a => a.date === todayStr).length;
+      document.getElementById('stat-favorite-contacts').innerText = contacts.filter(c => c.favorite).length;
+    }
+
+    function formatDate(dateStr) {
+      if (!dateStr) return '';
+      const parts = dateStr.split('-');
+      return `${parts[2]}/${parts[1]}/${parts[0]}`;
+    }
+
+    function escapeHtml(text) {
+      if (!text) return '';
+      return text.replace(/[&<>"']/g, function(m) {
+        return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' }[m];
+      });
+    }
+
+    function showToast(message, type = 'success') {
+      const container = document.getElementById('toast-container');
+      const toast = document.createElement('div');
+      
+      const bgColor = type === 'error' ? 'bg-rose-600' : 'bg-slate-800 dark:bg-slate-100';
+      const textColor = type === 'error' ? 'text-white' : 'text-white dark:text-slate-900';
+
+      toast.className = `${bgColor} ${textColor} text-xs font-medium px-4 py-3 rounded-xl shadow-lg transition-all duration-300 opacity-0 transform translate-y-2 flex items-center space-x-2 pointer-events-auto`;
+      toast.innerHTML = `
+        <i class="fa-solid ${type === 'error' ? 'fa-triangle-exclamation' : 'fa-circle-check'}"></i>
+        <span>${escapeHtml(message)}</span>
+      `;
+
+      container.appendChild(toast);
+
+      // Trigger animation
+      setTimeout(() => {
+        toast.classList.remove('opacity-0', 'translate-y-2');
+      }, 10);
+
+      setTimeout(() => {
+        toast.classList.add('opacity-0', 'translate-y-2');
+        setTimeout(() => toast.remove(), 300);
+      }, 3000);
+    }
+
+    // Backup & Restore
+    function exportData() {
+      const data = { contacts, appointments };
+      const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `backup_agenda_${new Date().toISOString().split('T')[0]}.json`;
+      a.click();
+      URL.revokeObjectURL(url);
+      showToast('Backup exportado!');
+    }
+
+    function importData(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        try {
+          const parsed = JSON.parse(e.target.result);
+          if (parsed.contacts && parsed.appointments) {
+            contacts = parsed.contacts;
+            appointments = parsed.appointments;
+            saveStorage();
+            renderAll();
+            showToast('Dados importados com sucesso!');
+          } else {
+            showToast('Arquivo de backup inválido.', 'error');
+          }
+        } catch (err) {
+          showToast('Erro ao ler arquivo JSON.', 'error');
+        }
+      };
+      reader.readAsText(file);
+    }
+  </script>
+</body>
+</html>

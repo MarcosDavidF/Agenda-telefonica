@@ -1,0 +1,545 @@
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+
+    font-family: Arial, sans-serif;
+
+    background: #f5f7fa;
+
+    color: #344054;
+}
+
+
+/* =========================
+   PÁGINA
+========================= */
+
+.pagina {
+    width: 100%;
+
+    max-width: 1500px;
+
+    margin: auto;
+
+    padding: 30px;
+}
+
+
+/* =========================
+   CABEÇALHO
+========================= */
+
+.cabecalho {
+
+    display: flex;
+
+    justify-content: space-between;
+
+    align-items: center;
+
+    margin-bottom: 25px;
+}
+
+.cabecalho h1 {
+
+    margin: 0;
+
+    font-size: 30px;
+
+    color: #1f2937;
+}
+
+.cabecalho p {
+
+    margin-top: 7px;
+
+    color: #667085;
+}
+
+
+/* VOLTAR */
+
+.btn-voltar {
+
+    border: none;
+
+    background: transparent;
+
+    color: #475467;
+
+    font-size: 14px;
+
+    cursor: pointer;
+}
+
+
+/* =========================
+   LAYOUT
+========================= */
+
+.layout {
+
+    display: grid;
+
+    grid-template-columns: 250px 1fr;
+
+    gap: 25px;
+
+    align-items: start;
+}
+
+
+/* =========================
+   FOTO
+========================= */
+
+.card-foto {
+
+    background: white;
+
+    border: 1px solid #e4e7ec;
+
+    border-radius: 10px;
+
+    padding: 20px;
+
+    position: sticky;
+
+    top: 20px;
+}
+
+.card-foto h2 {
+
+    margin-top: 0;
+
+    font-size: 16px;
+
+    color: #1f2937;
+}
+
+
+.preview {
+
+    width: 100%;
+
+    height: 240px;
+
+    border: 2px dashed #d0d5dd;
+
+    border-radius: 8px;
+
+    background: #f9fafb;
+
+    display: flex;
+
+    justify-content: center;
+
+    align-items: center;
+
+    overflow: hidden;
+
+    margin: 15px 0;
+}
+
+.preview span {
+
+    color: #98a2b3;
+
+    font-size: 14px;
+}
+
+.preview img {
+
+    width: 100%;
+
+    height: 100%;
+
+    object-fit: cover;
+
+    display: none;
+}
+
+
+/* input original escondido */
+
+#fotoMotorista,
+#cnhImagem,
+#cnhPdf {
+
+    display: none;
+}
+
+
+/* botão foto */
+
+.btn-foto {
+
+    display: block;
+
+    width: 100%;
+
+    padding: 11px;
+
+    text-align: center;
+
+    border-radius: 6px;
+
+    background: #1677ff;
+
+    color: white;
+
+    cursor: pointer;
+
+    font-size: 14px;
+
+    transition: 0.2s;
+}
+
+.btn-foto:hover {
+
+    background: #095fd9;
+}
+
+.card-foto small {
+
+    display: block;
+
+    margin-top: 10px;
+
+    color: #98a2b3;
+
+    line-height: 1.4;
+}
+
+
+/* =========================
+   CARDS
+========================= */
+
+.card {
+
+    background: white;
+
+    border: 1px solid #e4e7ec;
+
+    border-radius: 10px;
+
+    padding: 24px;
+
+    margin-bottom: 20px;
+}
+
+
+/* título das seções */
+
+.titulo-secao {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 12px;
+
+    margin-bottom: 22px;
+
+    padding-bottom: 15px;
+
+    border-bottom: 1px solid #eaecf0;
+}
+
+.titulo-secao h2 {
+
+    margin: 0;
+
+    font-size: 17px;
+
+    color: #1d2939;
+}
+
+.titulo-secao p {
+
+    margin: 4px 0 0;
+
+    font-size: 13px;
+
+    color: #98a2b3;
+}
+
+
+/* ÍCONE */
+
+.icone {
+
+    width: 38px;
+
+    height: 38px;
+
+    border-radius: 8px;
+
+    background: #eef4ff;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+}
+
+
+/* =========================
+   GRID DOS CAMPOS
+========================= */
+
+.grid {
+
+    display: grid;
+
+    grid-template-columns: repeat(2, 1fr);
+
+    gap: 18px 22px;
+}
+
+
+/* =========================
+   CAMPOS
+========================= */
+
+.campo {
+
+    display: flex;
+
+    flex-direction: column;
+}
+
+.campo label {
+
+    font-size: 13px;
+
+    font-weight: 600;
+
+    margin-bottom: 7px;
+
+    color: #344054;
+}
+
+.campo label span {
+
+    color: #d92d20;
+}
+
+
+/* INPUTS */
+
+.campo input,
+.campo select {
+
+    width: 100%;
+
+    height: 42px;
+
+    border: 1px solid #d0d5dd;
+
+    border-radius: 6px;
+
+    padding: 0 12px;
+
+    font-size: 14px;
+
+    color: #344054;
+
+    background: white;
+
+    outline: none;
+
+    transition: 0.2s;
+}
+
+
+/* PLACEHOLDER */
+
+.campo input::placeholder {
+
+    color: #98a2b3;
+}
+
+
+/* FOCO */
+
+.campo input:focus,
+.campo select:focus {
+
+    border-color: #1677ff;
+
+    box-shadow: 0 0 0 3px rgba(22, 119, 255, 0.10);
+}
+
+
+/* =========================
+   DOCUMENTOS
+========================= */
+
+.documentos {
+
+    display: flex;
+
+    gap: 12px;
+
+    margin-top: 20px;
+}
+
+.btn-documento {
+
+    padding: 10px 15px;
+
+    border: 1px solid #d0d5dd;
+
+    border-radius: 6px;
+
+    color: #344054;
+
+    background: #fff;
+
+    cursor: pointer;
+
+    font-size: 13px;
+
+    transition: 0.2s;
+}
+
+.btn-documento:hover {
+
+    border-color: #1677ff;
+
+    color: #1677ff;
+
+    background: #f5f9ff;
+}
+
+
+/* =========================
+   BOTÕES FINAIS
+========================= */
+
+.acoes {
+
+    display: flex;
+
+    justify-content: flex-end;
+
+    gap: 12px;
+
+    padding-top: 5px;
+}
+
+
+.btn-cancelar {
+
+    height: 42px;
+
+    padding: 0 22px;
+
+    border: 1px solid #d0d5dd;
+
+    border-radius: 6px;
+
+    background: white;
+
+    color: #344054;
+
+    cursor: pointer;
+
+    font-size: 14px;
+}
+
+
+.btn-cadastrar {
+
+    height: 42px;
+
+    padding: 0 24px;
+
+    border: none;
+
+    border-radius: 6px;
+
+    background: #16a34a;
+
+    color: white;
+
+    cursor: pointer;
+
+    font-size: 14px;
+
+    font-weight: 600;
+
+    transition: 0.2s;
+}
+
+.btn-cadastrar:hover {
+
+    background: #15803d;
+
+    transform: translateY(-1px);
+}
+
+
+/* =========================
+   RESPONSIVO
+========================= */
+
+@media (max-width: 900px) {
+
+    .layout {
+
+        grid-template-columns: 1fr;
+    }
+
+    .card-foto {
+
+        position: static;
+    }
+
+}
+
+
+@media (max-width: 600px) {
+
+    .pagina {
+
+        padding: 15px;
+    }
+
+    .cabecalho {
+
+        flex-direction: column;
+
+        align-items: flex-start;
+
+        gap: 15px;
+    }
+
+    .grid {
+
+        grid-template-columns: 1fr;
+    }
+
+    .documentos {
+
+        flex-direction: column;
+    }
+
+    .acoes {
+
+        flex-direction: column;
+    }
+
+    .btn-cancelar,
+    .btn-cadastrar {
+
+        width: 100%;
+    }
+
+}

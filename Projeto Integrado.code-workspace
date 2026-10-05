@@ -1,0 +1,43 @@
+{
+	"folders": [
+		{
+			"path": "../../Projeto Integrado"
+		},
+		{
+			"path": "../../CURSO HASHTAG"
+		},
+		{
+			"path": "../../DEVCLUB"
+		},
+		{
+			"path": "../../../Desktop/lista-de-tarefas"
+		},
+		{
+			"path": "../../fundacao_bradesco"
+		},
+		{
+			"path": "../../projetorocketseat"
+		},
+		{
+			"path": "../../../Desktop/freecodecamp"
+		},
+		{
+			"path": "../../PROJETO-TRAVELGRAM"
+		},
+		{
+			"path": "../../UNIATENEU"
+		},
+		{
+			"path": "../../PROJETO_HOSPITAL"
+		},
+		{
+			"path": "../../ICC"
+		},
+		{
+			"path": "../../PROJETO_CALCULADORA"
+		}
+	],
+	"settings": {
+		"liveServer.settings.multiRootWorkspaceName": "PROJETO_CALCULADORA"
+	}
+}

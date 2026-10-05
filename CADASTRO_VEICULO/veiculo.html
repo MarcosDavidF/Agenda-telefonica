@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cadastro de Veiculo</title>
+    <link rel="stylesheet" href="style.css">
+
+</head>
+<body>
+
+    <header>
+        <div>
+            <h1>Cadastro de Veículo</h1>
+
+            <p>
+                Formulário para cadastro de novos veículos
+            </p>
+        </div>
+
+        <button class="btn-voltar">
+            ← Voltar
+        </button>
+
+    </header>
+
+    <!-- ÁREA PRINCIPAL -->
+
+    <div class="layout">
+
+            <!-- FORMULÁRIO DE CADASTRO -->
+
+            <section class="conteudo">
+
+                <!-- PLACAS DO VEICULO -->
+
+                <div id="placas">
+
+                    <div class="campo placa" id="campoPlaca1">
+
+                        <label for="placa1">
+                            Placa Cavalo:<span>*</span>
+                        </label>
+
+                        <input 
+                        type="text" 
+                        id="placa1" 
+                        name="placa1" 
+                        required><br><br>
+
+                    </div>
+
+
+                    <div class="campo placa" id="campoPlaca2">
+
+                        <label for="placa_carreta_1">
+                            Placa Carreta 1:<span>*</span>
+                        </label>
+
+                        <input type="text" 
+                        id="placa_carreta_1" 
+                        name="placa_carreta_1" 
+                        required><br><br>
+
+                    </div>
+
+                    <div class="campo" id="campoPlaca3">
+
+                        <label for="placa_carreta_2">
+                            Placa Carreta 2:<span>*</span>
+                        </label>
+
+                        <input type="text" 
+                        id="placa_carreta_2" 
+                        name="placa_carreta_2" 
+                        required><br><br>
+
+                    </div>
+                </div>
+
+                <!-- SOBRE O CAMINHAO -->
+
+                <div id="caminhao">
+
+                        <div class="campo tipo-caminhao">
+
+                            <label for="tipo_caminhao">
+                                Tipo de Caminhão:<span>*</span>
+                            </label>
+                            <select id="tipo-caminhao" name="tipo-caminhao" required>
+                                <option value="">(Selecionar)</option>
+                                <option value="2eixos">Caminhão TRUCK</option>
+                                <option value="2eixos">Caminhão Bitrem</option>
+                                <option value="4eixos">RodoTrem</option>
+                            </select>
+                        </div>
+
+                        <div class="campo quantidade-eixo">
+                            <label for="quantidade_eixo">
+                                Quantidade de Eixos:<span>*</span>
+                            </label>
+                            <select id="quantidade_eixo" name="quantidade_eixo" required>
+                                <option value="">(Selecionar)</option>
+                                <option value="2eixos">2 Eixos</option>
+                                <option value="3eixos">3 Eixos</option>
+                                <option value="4eixos">4 Eixos</option>
+                            </select>
+                        </div>
+                </div>
+
+                <!-- SOBRE A CARGA -->
+
+                <div id="carga">                       
+                        <div class="campo peso-maximo">
+                            <label for="peso_maximo">
+                                Peso Máximo:<span>*</span>
+                            </label>
+                            <input type="number" id="peso_maximo" name="peso_maximo" required><br><br>
+                        </div>
+
+                        <div class="campo cubagem">
+                            <label for="cubagem">
+                                Cubagem:<span>*</span>
+                            </label>
+                            <input type="number" id="cubagem" name="cubagem" placeholder="Ex:100m³" required><br><br>
+                        </div>
+                    </div>
+
+                    <div class="campo chassi">
+                        <label for="chassi">Chassi:<span>*</span></label>
+                        <input type="text" id="chassi" name="chassi" required><br><br>
+                    </div>
+
+                    <div class="campo ano">
+                        <label for="ano_fabricacao">Ano Fabricação:<span>*</span></label>
+                        <select id="ano" name="ano" required>
+                            <option value="">(Selecione)</option>
+                        </select>
+                    </div>
+
+                    <div class="campo marca">
+                        <label for="marca">Marca:<span>*</span></label>
+                        <input type="text" id="marca" name="marca" required><br><br>
+                    </div>
+
+                    <div class="campo modelo">
+                        <label for="modelo">Modelo:<span>*</span></label>
+                        <input type="text" id="modelo" name="modelo" required><br><br>
+                    </div>
+
+                    <div class="campo cor">
+                        <label for="cor">Cor:<span>*</span></label>
+                        <input type="text" id="cor" name="cor" required><br><br>
+                    </div>
+
+                    <div class="campo ranavam">
+                        <label for="renavam">Renavam:<span>*</span></label>
+                        <input type="text" id="renavam" name="renavam" required><br><br>
+                    </div>
+
+                    <div class="campo uf-veiculo">
+                        <label for="uf_veiculo">UF Veículo:<span>*</span></label>
+                        <select type="text" id="uf_veiculo" name="uf_veiculo" required>
+                            <option value="">(Selecionar)</option>
+                            <option value="ce">Ceará</option>
+                            <option value="rj">Rio de Janeiro</option>
+                            <option value="ms">Mato Grosso do Sul</option>
+                        </select>
+                    </div>
+
+                    <div class="campo cidade">
+                        <label for="cidade">Cidade:<span>*</span></label>
+                        <select type="text" id="cidade" name="cidade" required>
+                            <option value="">(Selecionar)</option>
+                            <option value="for">Fortaleza</option>
+                            <option value="caucaia">Caucaia</option>
+                            <option value="maracanau">Maracanaú</option>
+                        </select>
+                    </div>
+
+                    <div class="campo perfil">
+                        <label for="perfil">Perfil:<span>*</span></label>
+                        <select type="text" id="perfil" name="perfil" required>
+                            <option value="">(Selecionar)</option>
+                            <option value="">(Selecionar)</option>
+                            <option value="">(Selecionar)</option>
+                            <option value="">(Selecionar)</option>
+                        </select>
+                    </div>
+
+                    <div class="campo controle-cliente">
+                        <label for="controle_cliente">Controle do Cliente:<span>*</span></label>
+                        <input type="text" id="controle_cliente" name="controle_cliente" required><br><br>
+                    </div>
+                    
+                    <div class="campo licenciamento">
+                        <label for="data_licenciamento">Data de Licenciamento:</label>
+                        <input type="date" id="data_licenciamento" name="data_licenciamento" required><br><br>
+                    </div>
+                    <button type="submit" class="btn-cadastrar">Cadastrar</button>
+            </section>
+    </div>
+</body>
+</html>
